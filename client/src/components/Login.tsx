@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,14 +26,14 @@ const Login: React.FC = () => {
   return (
     <div className="auth-container">
       <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--primary-red)' }}>
-        Login to METRONSHOE
+        {t('loginTitle')}
       </h2>
       
       {error && <div className="error">{error}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Email:</label>
+          <label>{t('email')}:</label>
           <input
             type="email"
             value={email}
@@ -41,7 +43,7 @@ const Login: React.FC = () => {
         </div>
         
         <div className="form-group">
-          <label>Password:</label>
+          <label>{t('password')}:</label>
           <input
             type="password"
             value={password}
@@ -51,12 +53,12 @@ const Login: React.FC = () => {
         </div>
         
         <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Logging in...' : t('login')}
         </button>
       </form>
       
       <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-        Don't have an account? <Link to="/register">Register here</Link>
+        Don't have an account? <Link to="/register">{t('register')} here</Link>
       </p>
     </div>
   );

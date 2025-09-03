@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const emailService = require('../utils/emailService');
 const router = express.Router();
 
 // Register
@@ -15,7 +16,11 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ token, user: { id: user._id, name, email } });
+    
+    // Send welcome email
+    emailService.sendWelcomeEmail(user);
+    
+    res.json({ token, user: { id: user._id, name, email, role: user.role } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
@@ -32,7 +37,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ token, user: { id: user._id, name: user.name, email } });
+    res.json({ token, user: { id: user._id, name: user.name, email, role: user.role } });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }

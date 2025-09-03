@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
@@ -8,6 +9,7 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { register, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,14 +27,14 @@ const Register: React.FC = () => {
   return (
     <div className="auth-container">
       <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--primary-red)' }}>
-        Join METRONSHOE
+        {t('registerTitle')}
       </h2>
       
       {error && <div className="error">{error}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Name:</label>
+          <label>{t('name')}:</label>
           <input
             type="text"
             value={name}
@@ -42,7 +44,7 @@ const Register: React.FC = () => {
         </div>
         
         <div className="form-group">
-          <label>Email:</label>
+          <label>{t('email')}:</label>
           <input
             type="email"
             value={email}
@@ -52,7 +54,7 @@ const Register: React.FC = () => {
         </div>
         
         <div className="form-group">
-          <label>Password:</label>
+          <label>{t('password')}:</label>
           <input
             type="password"
             value={password}
@@ -62,12 +64,12 @@ const Register: React.FC = () => {
         </div>
         
         <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={loading}>
-          {loading ? 'Creating Account...' : 'Register'}
+          {loading ? 'Creating Account...' : t('register')}
         </button>
       </form>
       
       <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-        Already have an account? <Link to="/login">Login here</Link>
+        Already have an account? <Link to="/login">{t('login')} here</Link>
       </p>
     </div>
   );

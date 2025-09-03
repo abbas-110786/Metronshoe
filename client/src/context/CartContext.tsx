@@ -11,11 +11,12 @@ interface CartItem {
     category: string;
   };
   quantity: number;
+  size: string;
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (productId: string, quantity?: number) => Promise<void>;
+  addToCart: (productId: string, quantity?: number, size?: string) => Promise<void>;
   removeFromCart: (productId: string) => Promise<void>;
   getCart: () => Promise<void>;
   cartTotal: number;
@@ -43,10 +44,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const addToCart = async (productId: string, quantity = 1) => {
+  const addToCart = async (productId: string, quantity = 1, size?: string) => {
     if (!token) return;
+    if (!size) {
+      console.error('Size is required');
+      return;
+    }
     try {
-      await cartService.addToCart(productId, quantity, token);
+      await cartService.addToCart(productId, quantity, size, token);
       await getCart();
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -63,7 +68,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const cartTotal = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  const cartTotal = cart.reduce((total, item) => total + ((item.product?.price || 0) * item.quantity), 0);
 
   useEffect(() => {
     if (token) getCart();
